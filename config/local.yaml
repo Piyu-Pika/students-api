@@ -1,0 +1,13 @@
+env: "local"
+storage_path: "storage/storage.db"
+http_server:
+  address: "localhost:8080"
+  read_timeout: 10000000000
+  write_timeout: 10000000000
+  max_header_bytes: 1048576
+  max_idle_connections: 100
+  max_connections: 100
+  max_request_size: 10485760
+  max_body_size: 10485760
+  max_header_size: 1048576
+ 
