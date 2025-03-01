@@ -57,7 +57,7 @@ http_server:
 
 ## 📁 Project Structure
 ```
-.
+
 ├── 📂 cmd/                    # Command executables
 │   └── 📂 students-api/      # Main application package
 │       └── 📄 main.go        # Entry point

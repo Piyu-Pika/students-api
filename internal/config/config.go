@@ -34,7 +34,6 @@ func MustLoad() *Config {
 
 	if _, err := os.Stat(config); os.IsNotExist(err) {
 		log.Fatalf("config file not found %s", config)
-		// panic("config file not found")
 	}
 
 	var cfg Config

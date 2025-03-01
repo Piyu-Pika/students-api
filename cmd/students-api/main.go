@@ -1,9 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/Piyu-Pika/students-api/internal/config"
 )
@@ -27,9 +33,27 @@ func main() {
 		Handler: router,
 	}
 	log.Println("Server started")
-	err := server.ListenAndServe()
+
+	done := make(chan os.Signal, 1)
+
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	<-done
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	slog.Info("Server stopped")
+	err:=server.Shutdown(ctx)
 	if err != nil {
-		log.Fatal(err)
+		slog.Fatal(err)
 	}
-	
+
 }
