@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/Piyu-Pika/students-api/internal/config"
+	"github.com/Piyu-Pika/students-api/internal/http/handlers/student"
 )
 
 func main() {
@@ -22,10 +23,7 @@ func main() {
 	//database setup
 	// router setup
 	router := http.NewServeMux()
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Students API \n"))
-		fmt.Fprintf(w, "Hello World")
-	})
+	router.HandleFunc("POST /api/students", student.New())
 	// setup server
 
 	server := &http.Server{
