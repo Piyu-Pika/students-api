@@ -23,7 +23,7 @@ func main() {
 	// router setup
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Students API"))
+		w.Write([]byte("Welcome to Students API \n"))
 		fmt.Fprintf(w, "Hello World")
 	})
 	// setup server
@@ -32,6 +32,8 @@ func main() {
 		Addr:    cfg.HttpServer.Address,
 		Handler: router,
 	}
+
+	slog.Info("Starting server", "address", cfg.HttpServer.Address)
 	log.Println("Server started")
 
 	done := make(chan os.Signal, 1)
@@ -51,9 +53,10 @@ func main() {
 	defer cancel()
 
 	slog.Info("Server stopped")
-	err:=server.Shutdown(ctx)
+	err := server.Shutdown(ctx)
 	if err != nil {
-		slog.Fatal(err)
+		slog.Error("Error shutti ng down server", "error", err)
 	}
 
+	slog.Info("Server exited properly")
 }
