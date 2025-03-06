@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/Piyu-Pika/students-api/internal/storage"
 	"github.com/Piyu-Pika/students-api/internal/types"
@@ -56,4 +57,30 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 		responce.WriteJson(w, http.StatusCreated, map[string]string{"id": fmt.Sprintf("%d", lastid)})
 	}
+}
+
+func Getbyid(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		slog.Info("Get by id",slog.String("id",id))
+		intid, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Error("Error parsing id", slog.String("id", id), slog.String("error", err.Error()))
+			responce.WriteJson(w, http.StatusInternalServerError, responce.GenralError(err))
+			return
+		}
+
+		student, err := storage.GetStudentByID(intid)
+		if err != nil {
+			slog.Error("Error getting student by id", slog.String("id", id), slog.String("error", err.Error()))
+			responce.WriteJson(w, http.StatusInternalServerError, responce.GenralError(err))
+			return
+		}
+		responce.WriteJson(w, http.StatusOK, student)  
+		 
+
+
+		
+
+}
 }
