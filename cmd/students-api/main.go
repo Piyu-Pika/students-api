@@ -13,6 +13,7 @@ import (
 
 	"github.com/Piyu-Pika/students-api/internal/config"
 	"github.com/Piyu-Pika/students-api/internal/http/handlers/student"
+	"github.com/Piyu-Pika/students-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -21,6 +22,11 @@ func main() {
 	cfg := config.MustLoad()
 	fmt.Println(cfg)
 	//database setup
+	_,err:=sqlite.New(cfg)
+	if err!=nil{
+		log.Fatal(err)
+	}
+	slog.Info("Database setup successfully",slog.String("database",cfg.StoragePath))
 	// router setup
 	router := http.NewServeMux()
 	router.HandleFunc("POST /api/students", student.New())
@@ -51,9 +57,9 @@ func main() {
 	defer cancel()
 
 	slog.Info("Server stopped")
-	err := server.Shutdown(ctx)
+	err = server.Shutdown(ctx)
 	if err != nil {
-		slog.Error("Error shutti ng down server", "error", err)
+		slog.Error("Error shutting down server", "error", err)
 	}
 
 	slog.Info("Server exited properly")

@@ -9,6 +9,7 @@ import (
 
 	"github.com/Piyu-Pika/students-api/internal/types"
 	"github.com/Piyu-Pika/students-api/internal/utils/responce"
+	"github.com/go-playground/validator/v10"
 )
 
 func New() http.HandlerFunc {
@@ -22,6 +23,17 @@ func New() http.HandlerFunc {
 			responce.WriteJson(w, http.StatusBadRequest, responce.GenralError(err))
 			return
 
+		}
+		if err != nil {
+			responce.WriteJson(w, http.StatusBadRequest, responce.GenralError(err))
+			return
+		}
+
+		//request validation
+		if err := validator.New().Struct(student); err != nil {
+			validateErrs := err.(validator.ValidationErrors)
+			responce.WriteJson(w, http.StatusBadRequest, responce.ValidationError(validateErrs))
+			return
 		}
 
 		w.Write([]byte("Welcome to Students API \n"))
