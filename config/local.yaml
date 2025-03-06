@@ -1,18 +1,5 @@
 env: "local"
 storage_path: "storage/storage.db"
-mongodb:
-  uri: "mongodb://localhost:27017"
-  database: "test"
-  collection: "students"
-  timeout: 10000000000
-  max_idle_connections: 100
-  max_connections: 100
-  max_retries: 3
-  retry_interval: 1000000000
-  retry_delay: 1000000000
-  retry_delay_max: 10000000000
-  retry_delay_factor: 2
-  retry_delay
 http_server:
   address: "localhost:8080"
   read_timeout: 10000000000
