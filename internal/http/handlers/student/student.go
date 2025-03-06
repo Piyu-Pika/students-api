@@ -5,14 +5,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 
+	"github.com/Piyu-Pika/students-api/internal/storage"
 	"github.com/Piyu-Pika/students-api/internal/types"
 	"github.com/Piyu-Pika/students-api/internal/utils/responce"
 	"github.com/go-playground/validator/v10"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("create student")
@@ -36,9 +38,22 @@ func New() http.HandlerFunc {
 			return
 		}
 
+		lastid, err := storage.CreateStudent(
+			student.Name,
+			student.Email,
+			student.Phone,
+			student.Age,
+		)
+
+		slog.Info("Student created", slog.String("id", fmt.Sprintf("%d", lastid)))
+		if err != nil {
+			responce.WriteJson(w, http.StatusInternalServerError, responce.GenralError(err))
+			return
+		}
+
 		w.Write([]byte("Welcome to Students API \n"))
 		fmt.Fprintf(w, "Hello World")
 
-		responce.WriteJson(w, http.StatusCreated, map[string]string{"message": "Student created successfully"})
+		responce.WriteJson(w, http.StatusCreated, map[string]string{"id": fmt.Sprintf("%d", lastid)})
 	}
 }
